@@ -1,0 +1,95 @@
+<div class="container fade-in">
+  <header class="page-header d-flex justify-between align-center mb-4">
+    <div class="header-content">
+      <h2 class="page-title">Purchase Bills</h2>
+      <p class="text-muted">Manage and track your purchase transactions</p>
+    </div>
+    <div class="actions d-flex gap-2">
+      <button class="btn btn-outline no-print" (click)="loadBills()">
+        <span>🔄</span> Refresh
+      </button>
+      <button class="btn btn-primary no-print" (click)="createNew()">
+        <span>➕</span> Create New Bill
+      </button>
+    </div>
+  </header>
+
+  <div class="card p-0">
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Transaction No</th>
+            <th>Date</th>
+            <th>Items</th>
+            <th>Qty</th>
+            <th>Total Amount</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bill of bills" class="table-row">
+            <td class="font-bold">
+              <div class="d-flex align-center gap-2">
+                {{ bill.transactionNo }}
+                <span *ngIf="bill.isOffline" class="badge badge-danger">Offline</span>
+              </div>
+            </td>
+            <td>{{ bill.transactionDate | date:'dd MMM, yyyy' }}</td>
+            <td class="text-muted">{{ bill.totalItems }}</td>
+            <td>{{ bill.totalQuantity }}</td>
+            <td class="font-semibold text-primary">{{ bill.totalAmount | currency }}</td>
+            <td class="text-right">
+              <button class="btn btn-outline btn-sm" (click)="editBill(bill.id!)">
+                Edit
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="bills.length === 0 && !loading">
+            <td colspan="6" class="empty-state">
+              <div class="empty-content">
+                <span class="empty-icon">📂</span>
+                <p>No bills found. Start by creating a new one!</p>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="loading">
+            <td colspan="6" class="loading-state">
+              <div class="spinner"></div>
+              <span>Loading transactions...</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+  .page-title { margin: 0; }
+  .text-muted { color: var(--text-muted); font-size: 0.875rem; }
+  .font-bold { font-weight: 700; color: var(--primary); }
+  .font-semibold { font-weight: 600; }
+  .text-primary { color: var(--accent); }
+  .text-right { text-align: right; }
+  .p-0 { padding: 0 !important; }
+  
+  .table-row { transition: background 0.2s; }
+  .table-row:hover { background-color: #f8fafc; }
+  
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+  .empty-icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
+  
+  .loading-state { text-align: center; padding: 3rem; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 1rem; }
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+</style>
